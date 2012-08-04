@@ -91,7 +91,7 @@ public abstract class AbstractRtpSession implements RtpSession, TimerTask {
 
     protected final String id;
     protected final int payloadType;
-    protected final int rtpPayloadType;
+    protected final int dtmfPayloadType;
     protected final HashedWheelTimer timer;
     protected final OrderedMemoryAwareThreadPoolExecutor executor;
     protected String host;
@@ -141,7 +141,7 @@ public abstract class AbstractRtpSession implements RtpSession, TimerTask {
         this(id, payloadType, -1, local, null, executor);
     }
 
-    public AbstractRtpSession(String id, int payloadType, int rtpPayloadType, RtpParticipant local, HashedWheelTimer timer,
+    public AbstractRtpSession(String id, int payloadType, int dtmfPayloadType, RtpParticipant local, HashedWheelTimer timer,
                               OrderedMemoryAwareThreadPoolExecutor executor) {
         if ((payloadType < 0) || (payloadType > 127)) {
             throw new IllegalArgumentException("PayloadType must be in range [0;127]");
@@ -153,7 +153,7 @@ public abstract class AbstractRtpSession implements RtpSession, TimerTask {
 
         this.id = id;
         this.payloadType = payloadType;
-        this.rtpPayloadType = rtpPayloadType;
+        this.dtmfPayloadType = dtmfPayloadType;
         this.localParticipant = local;
         this.participantDatabase = this.createDatabase();
         this.executor = executor;
@@ -420,9 +420,8 @@ public abstract class AbstractRtpSession implements RtpSession, TimerTask {
             return;
         }
 
-        if (packet.getPayloadType() != this.payloadType && packet.getPayloadType() != this.rtpPayloadType) {
-        	System.out.println(" !!!!!!!!!!!!!!! a different payload type !!!!!!!!!!!!!!" + packet.getPayloadType());
-            // Silently discard packets of wrong payload.
+        if (packet.getPayloadType() != this.payloadType && packet.getPayloadType() != this.dtmfPayloadType) {
+            // Silently discard packets if the payload doesn't match the default or the expected DTMF payloads
             return;
         }
 

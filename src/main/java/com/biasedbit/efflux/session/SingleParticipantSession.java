@@ -88,10 +88,10 @@ public class SingleParticipantSession extends AbstractRtpSession {
     	this(id, payloadType, -1, localParticipant, remoteParticipant, timer, executor);
     }
     
-    public SingleParticipantSession(String id, int payloadType, int rtpPayloadType, RtpParticipant localParticipant,
+    public SingleParticipantSession(String id, int payloadType, int dtmfPayloadType, RtpParticipant localParticipant,
                                     RtpParticipant remoteParticipant, HashedWheelTimer timer,
                                     OrderedMemoryAwareThreadPoolExecutor executor) {
-        super(id, payloadType, rtpPayloadType, localParticipant, timer, executor);
+        super(id, payloadType, dtmfPayloadType, localParticipant, timer, executor);
         if (!remoteParticipant.isReceiver()) {
             throw new IllegalArgumentException("Remote participant must be a receiver (data & control addresses set)");
         }
