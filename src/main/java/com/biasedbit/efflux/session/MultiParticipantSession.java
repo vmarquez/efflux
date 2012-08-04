@@ -35,22 +35,22 @@ public class MultiParticipantSession extends AbstractRtpSession implements Parti
     // constructors ---------------------------------------------------------------------------------------------------
 
     public MultiParticipantSession(String id, int payloadType, RtpParticipant localParticipant) {
-        super(id, payloadType, localParticipant, null, null);
+        super(id, payloadType, -1, localParticipant, null, null);
     }
 
     public MultiParticipantSession(String id, int payloadType, RtpParticipant localParticipant,
                                    HashedWheelTimer timer) {
-        super(id, payloadType, localParticipant, timer, null);
+        super(id, payloadType, -1, localParticipant, timer, null);
     }
 
     public MultiParticipantSession(String id, int payloadType, RtpParticipant localParticipant,
                                    OrderedMemoryAwareThreadPoolExecutor executor) {
-        super(id, payloadType, localParticipant, null, executor);
+        super(id, payloadType, -1, localParticipant, null, executor);
     }
 
     public MultiParticipantSession(String id, int payloadType, RtpParticipant localParticipant,
                                    HashedWheelTimer timer, OrderedMemoryAwareThreadPoolExecutor executor) {
-        super(id, payloadType, localParticipant, timer, executor);
+        super(id, payloadType, -1, localParticipant, timer, executor);
     }
 
     // AbstractRtpSession ---------------------------------------------------------------------------------------------

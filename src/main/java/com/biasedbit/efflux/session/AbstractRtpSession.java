@@ -91,6 +91,7 @@ public abstract class AbstractRtpSession implements RtpSession, TimerTask {
 
     protected final String id;
     protected final int payloadType;
+    protected final int rtpPayloadType;
     protected final HashedWheelTimer timer;
     protected final OrderedMemoryAwareThreadPoolExecutor executor;
     protected String host;
@@ -127,20 +128,20 @@ public abstract class AbstractRtpSession implements RtpSession, TimerTask {
     // constructors ---------------------------------------------------------------------------------------------------
 
     public AbstractRtpSession(String id, int payloadType, RtpParticipant local) {
-        this(id, payloadType, local, null, null);
+        this(id, payloadType, -1, local, null, null);
     }
 
     public AbstractRtpSession(String id, int payloadType, RtpParticipant local,
                               HashedWheelTimer timer) {
-        this(id, payloadType, local, timer, null);
+        this(id, payloadType, -1, local, timer, null);
     }
 
     public AbstractRtpSession(String id, int payloadType, RtpParticipant local,
                               OrderedMemoryAwareThreadPoolExecutor executor) {
-        this(id, payloadType, local, null, executor);
+        this(id, payloadType, -1, local, null, executor);
     }
 
-    public AbstractRtpSession(String id, int payloadType, RtpParticipant local, HashedWheelTimer timer,
+    public AbstractRtpSession(String id, int payloadType, int rtpPayloadType, RtpParticipant local, HashedWheelTimer timer,
                               OrderedMemoryAwareThreadPoolExecutor executor) {
         if ((payloadType < 0) || (payloadType > 127)) {
             throw new IllegalArgumentException("PayloadType must be in range [0;127]");
@@ -152,6 +153,7 @@ public abstract class AbstractRtpSession implements RtpSession, TimerTask {
 
         this.id = id;
         this.payloadType = payloadType;
+        this.rtpPayloadType = rtpPayloadType;
         this.localParticipant = local;
         this.participantDatabase = this.createDatabase();
         this.executor = executor;
@@ -418,7 +420,8 @@ public abstract class AbstractRtpSession implements RtpSession, TimerTask {
             return;
         }
 
-        if (packet.getPayloadType() != this.payloadType) {
+        if (packet.getPayloadType() != this.payloadType && packet.getPayloadType() != this.rtpPayloadType) {
+        	System.out.println(" !!!!!!!!!!!!!!! a different payload type !!!!!!!!!!!!!!" + packet.getPayloadType());
             // Silently discard packets of wrong payload.
             return;
         }

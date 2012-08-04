@@ -27,6 +27,7 @@ import org.jboss.netty.util.HashedWheelTimer;
 
 import java.net.SocketAddress;
 import java.util.HashMap;
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -65,7 +66,7 @@ public class SingleParticipantSession extends AbstractRtpSession {
     private final AtomicBoolean receivedPackets;
 
     // constructors ---------------------------------------------------------------------------------------------------
-
+    
     public SingleParticipantSession(String id, int payloadType, RtpParticipant localParticipant,
                                     RtpParticipant remoteParticipant) {
         this(id, payloadType, localParticipant, remoteParticipant, null, null);
@@ -78,13 +79,19 @@ public class SingleParticipantSession extends AbstractRtpSession {
 
     public SingleParticipantSession(String id, int payloadType, RtpParticipant localParticipant,
                                     RtpParticipant remoteParticipant, HashedWheelTimer timer) {
-        this(id, payloadType, localParticipant, remoteParticipant, timer, null);
+        this(id, payloadType,  localParticipant, remoteParticipant, timer, null);
     }
 
-    public SingleParticipantSession(String id, int payloadType, RtpParticipant localParticipant,
+   public SingleParticipantSession(String id, int payloadType, RtpParticipant localParticipant,
+            RtpParticipant remoteParticipant, HashedWheelTimer timer,
+            OrderedMemoryAwareThreadPoolExecutor executor) {
+    	this(id, payloadType, -1, localParticipant, remoteParticipant, timer, executor);
+    }
+    
+    public SingleParticipantSession(String id, int payloadType, int rtpPayloadType, RtpParticipant localParticipant,
                                     RtpParticipant remoteParticipant, HashedWheelTimer timer,
                                     OrderedMemoryAwareThreadPoolExecutor executor) {
-        super(id, payloadType, localParticipant, timer, executor);
+        super(id, payloadType, rtpPayloadType, localParticipant, timer, executor);
         if (!remoteParticipant.isReceiver()) {
             throw new IllegalArgumentException("Remote participant must be a receiver (data & control addresses set)");
         }
